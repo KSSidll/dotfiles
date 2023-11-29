@@ -62,6 +62,10 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
+-- Paste from clipboard
+vim.keymap.set({"n"}, "<leader>p", [["+p]])
+vim.keymap.set({"n"}, "<leader>P", [["+P]])
+
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 
 --vim.keymap.set("n", "Q", "<nop>")
@@ -426,8 +430,9 @@ require('lazy').setup({
     intelephense = {
       telemetry = { enable = false },
       diagnostics = {
-        run = "onType"
+        run = "onSave",
       },
+      filetypes = {"php"},
     },
     -- tsserver = {},
     -- html = { filetypes = { 'html', 'twig', 'hbs'} },
