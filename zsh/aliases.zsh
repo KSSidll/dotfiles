@@ -26,4 +26,5 @@ alias ezsh='$EDITOR ~/.config/zsh/'
 alias envim='$EDITOR ~/.config/nvim/'
 alias etmux='$EDITOR ~/.config/tmux/'
 alias etmuxf='$EDITOR ~/.config/tmux/scripts/tmux-sessionizer-find'
+alias eemacs='$EDITOR ~/.config/.spacemacs'
 # vim:ft=zsh
