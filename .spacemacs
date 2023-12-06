@@ -47,7 +47,7 @@ This function should only modify configuration layer settings."
      git
      helm
      lsp
-     markdown
+     ;; markdown
      multiple-cursors
      org
      (shell :variables
@@ -570,6 +570,9 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  ;; scrolloff
+  (setq scroll-margin 8)
+
   ;; fix my slow fingers not being able to click off of shift fast enough for saving and quitting with vim ex
   (defun W () (interactive) (save-buffer))
   (defun Wq () (interactive) (evil-save-and-quit))
@@ -580,13 +583,11 @@ before packages are loaded."
   (define-key evil-insert-state-map (kbd "C-c") 'evil-escape)
   (define-key evil-replace-state-map (kbd "C-c") 'evil-escape)
   (define-key evil-visual-state-map (kbd "C-c") 'evil-escape)
-  (define-key evil-visual-state-map (kbd "C-c") 'evil-escape)
 
   ;; load lsp when in programming major modes
   (add-hook 'php-mode-hook 'lsp)
   (add-hook 'rust-mode-hook 'lsp)
   (add-hook 'rustic-mode-hook 'lsp)
-  (add-hook 'markdown-mode-hook 'lsp)
   (add-hook 'c++-mode-hook 'lsp)
   (add-hook 'python-mode-hook 'lsp)
 )
