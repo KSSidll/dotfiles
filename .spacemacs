@@ -579,11 +579,19 @@ before packages are loaded."
   (defun WQ () (interactive) (evil-save-and-quit))
   (defun Q () (interactive) (evil-quit))
 
-  ;; escape to normal mode from vim modes on C-c because how else am i supposed to do that normally
-  (define-key evil-insert-state-map (kbd "C-c") 'evil-escape)
-  (define-key evil-replace-state-map (kbd "C-c") 'evil-escape)
-  (define-key evil-visual-state-map (kbd "C-c") 'evil-escape)
+  ;; integrate C-g with evil
+  (defun evil-force-keyboard-quit()
+    (interactive)
+    (keyboard-escape-quit)
+    (unless (eq evil-state 'emacs) (evil-force-normal-state)))
+  (bind-key* "C-g" 'evil-force-keyboard-quit)
 
+  ;; make C-c return evil to normal state
+  (define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
+  (define-key evil-emacs-state-map (kbd "C-c") 'evil-normal-state)
+  (define-key evil-operator-state-map (kbd "C-c") 'evil-normal-state)
+  (define-key evil-replace-state-map (kbd "C-c") 'evil-normal-state)
+  
   ;; load lsp when in programming major modes
   (add-hook 'php-mode-hook 'lsp)
   (add-hook 'rust-mode-hook 'lsp)
