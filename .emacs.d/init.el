@@ -61,6 +61,7 @@
 (use-package magit) ;; Git interface
 
 (diminish 'eldoc-mode) ;; Hide ElDoc mode from mode line
+(diminish 'auto-revert-mode)
 
 ;; Turn off auto fill mode (text hard wrap mode)
 (auto-fill-mode 0)
@@ -302,6 +303,7 @@
 
 ;;;; Template completion
 (require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("src" . "src"))
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
@@ -341,8 +343,17 @@
 
 ;;;; Code completion
 (use-package company
+  :after lsp-mode
   :diminish
-  :bind ("s-<tab>" . company-capf))
+  :hook (lsp-mode . company-mode)
+  :bind
+  (:map company-active-map
+	("<tab>" . company-complete-selection))
+  (:map lsp-mode-map
+	("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
 
 ;;;; Sideline with diagnostics messages
 (use-package lsp-ui
