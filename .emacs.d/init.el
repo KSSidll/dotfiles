@@ -184,7 +184,6 @@
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
 	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
 	 ([remap describe-function] . counsel-describe-function)
 	 ([remap describe-variable] . counsel-describe-variable)
 	 :map minibuffer-local-map
@@ -208,12 +207,11 @@
   ([remap describe-key] . helpful-key))
 
 ;; Project management
-(use-package projectile
+(use-package counsel-projectile
   :diminish
   :config
-  (projectile-mode 1)
+  (counsel-projectile-mode 1)
   :init
-  (setq projectile-switch-project-action #'projectile-dired)
   (setq projectile-project-search-path '(("~/dev/personal/projects" . 1)
 					 ("~/dev/personal/notes" . 1)
 					 ("~/dev/school" . 1)
@@ -337,7 +335,7 @@
 		(lsp-mode 1)))))
 
 (use-package dap-mode) ;; Debug adapter
-(use-package lsp-ivy) ;; Ivy integration
+;; (use-package lsp-ivy) ;; Ivy integration
 (use-package flycheck) ;; Diagnostics
 (use-package yasnippet) ;; Snippet template system
 
@@ -352,8 +350,16 @@
   (:map lsp-mode-map
 	("<tab>" . company-indent-or-complete-common))
   :custom
+  (company-tooltip-limit 8)
+  (company-tooltip-minimum 4)
+
+  ;; sorting functions, todo test each and decide?
+  (company-transformers nil)
+  ;; (company-transformers '(company-sort-by-occurrence))
+  ;; (company-transformers '(company-sort-by-backend-importance))
+
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  (company-idle-delay 0))
 
 ;;;; Sideline with diagnostics messages
 (use-package lsp-ui
@@ -372,7 +378,13 @@
 ;;;; Define prefix map
 (defvar-keymap space-prefix-map)
 (define-key evil-normal-state-map (kbd "SPC") (cons "space prefix" space-prefix-map))
-(add-hook 'dired-mode-hook (lambda () (keymap-local-unset "<normal-state> SPC"))) ;; Unset SPC from dired so we can use space-prefix-map
+(define-key evil-visual-state-map (kbd "SPC") (cons "space prefix" space-prefix-map))
+
+;;;;;; Fix dired
+(add-hook 'dired-mode-hook
+	  (lambda ()
+	    (define-key dired-mode-map (kbd "SPC") (cons "space prefix" space-prefix-map))
+	    (define-key dired-mode-map (kbd "<normal-state> SPC") (cons "space prefix" space-prefix-map))))
 
 ;;;; M-x on SPC -> SPC
 (define-key space-prefix-map (kbd "SPC") '("M-x" . execute-extended-command))
@@ -385,6 +397,7 @@
 (define-key space-prefix-map (kbd "f") (cons "file" prefix-f-map))
 
 (define-key prefix-f-map (kbd "f") '("find file" . counsel-find-file))
+(define-key prefix-f-map (kbd "s") '("search" . counsel-file-jump))
 
 ;;;; Define map for emacs file related bindings
 (defvar-keymap prefix-f-e-map)
@@ -410,3 +423,9 @@
 (defvar-keymap prefix-p-map
   :parent projectile-command-map) ;; Inherit from projectile-command-map
 (define-key space-prefix-map (kbd "p") (cons "project" prefix-p-map))
+
+(define-key prefix-p-map (kbd "f") '("find file" . projectile-find-file))
+(define-key prefix-p-map (kbd "s") '("search" . counsel-projectile-rg))
+
+;;;;;; this  should be under file, but i got used to clicking pv, and f is *not* fun to click on dvorak
+(define-key prefix-p-map (kbd "v") '("file dired" . dired-jump))
