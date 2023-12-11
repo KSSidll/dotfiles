@@ -18,7 +18,7 @@
 (setq scroll-conservatively 101) ;; Makes it so that auto scroll doesn't center the cursor
 (setq scroll-margin 8) ;; Set auto scroll to trigger when cursor is 8 lines from bottom/top of the window
 
-(set-default-coding-systems 'utf-8) ;; Fix windows being from 1985 and not having been updated since
+(set-default-coding-systems 'utf-8)
 
 ;; Line numbers
 (global-display-line-numbers-mode t)
@@ -30,10 +30,19 @@
 (add-hook 'shell-mode-hook (lambda () (display-line-numbers-mode 0)))
 (add-hook 'eshell-mode-hook (lambda () (display-line-numbers-mode 0)))
 
-;; Font
-(set-face-attribute 'default nil :font "HackNerdFontMono" :height 110)
-(set-face-attribute 'fixed-pitch nil :font "HackNerdFontMono" :height 110)
-(set-face-attribute 'variable-pitch nil :font "Hack" :height 110)
+;; Font Laptop
+(if (eq system-type 'gnu/linux)
+    ((lambda ()
+       (set-face-attribute 'default nil :font "HackNerdFontMono" :height 110)
+       (set-face-attribute 'fixed-pitch nil :font "HackNerdFontMono" :height 110)
+       (set-face-attribute 'variable-pitch nil :font "Hack" :height 110))))
+
+;; Font PC (note to self, why are you still using windows)
+(if (eq system-type 'windows-nt)
+    ((lambda ()
+       (set-face-attribute 'default nil :font "Hack NFM" :height 110)
+       (set-face-attribute 'fixed-pitch nil :font "Hack NFM" :height 110)
+       (set-face-attribute 'variable-pitch nil :font "Hack" :height 110))))
 
 ;; Bootstrap package manager
 (unless (featurep 'straight)
@@ -212,10 +221,18 @@
   :config
   (counsel-projectile-mode 1)
   :init
-  (setq projectile-project-search-path '(("~/dev/personal/projects" . 1)
-					 ("~/dev/personal/notes" . 1)
-					 ("~/dev/school" . 1)
-					 ("~/dev/work" . 1))))
+  (defvar projectile-main-project-dir-prefix
+    (cond
+     ((eq system-type 'gnu/linux) "~/")
+     ((eq system-type 'windows-nt) "C:/")))
+
+  (unless (eq projectile-main-project-dir-prefix nil)
+    (setq projectile-project-search-path
+	  (list
+	   (concat projectile-main-project-dir-prefix "dev/personal/projects")
+	   (concat projectile-main-project-dir-prefix "dev/personal/notes")
+	   (concat projectile-main-project-dir-prefix "dev/school")
+	   (concat projectile-main-project-dir-prefix "dev/work")))))
 
 ;; Org Mode
 (defun kssidll/org-mode-setup ()
