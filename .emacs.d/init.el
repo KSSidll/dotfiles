@@ -16,13 +16,16 @@
 (menu-bar-mode -1)   ;; Disable the menu bar
 
 (setq scroll-conservatively 101) ;; Makes it so that auto scroll doesn't center the cursor
-(setq scroll-margin 8) ;; Set auto scroll to trigger when cursor is 8 lines from bottom/top of the window
+(setq scroll-margin 12) ;; Set auto scroll to trigger when cursor is 8 lines from bottom/top of the window
 
 (set-default-coding-systems 'utf-8)
 
 ;; Line numbers
 (global-display-line-numbers-mode t)
 (setq display-line-numbers-type 'relative)
+
+;; Tab width
+(setq-default tab-width 4)
 
 ;; Disable line numbers for some modes
 (add-hook 'dired-mode-hook (lambda () (display-line-numbers-mode 0)))
@@ -221,6 +224,32 @@
   :config
   (counsel-projectile-mode 1)
   :init
+  (setq counsel-projectile-switch-project-action
+	'(4
+	  ("o" counsel-projectile-switch-project-action "jump to a project buffer or file")
+	  ("f" counsel-projectile-switch-project-action-find-file "jump to a project file")
+	  ("d" counsel-projectile-switch-project-action-find-dir "jump to a project directory")
+	  ("D" counsel-projectile-switch-project-action-dired "open project in dired")
+	  ("b" counsel-projectile-switch-project-action-switch-to-buffer "jump to a project buffer")
+	  ("m" counsel-projectile-switch-project-action-find-file-manually "find file manually from project root")
+	  ("S" counsel-projectile-switch-project-action-save-all-buffers "save all project buffers")
+	  ("k" counsel-projectile-switch-project-action-kill-buffers "kill all project buffers")
+	  ("K" counsel-projectile-switch-project-action-remove-known-project "remove project from known projects")
+	  ("c" counsel-projectile-switch-project-action-compile "run project compilation command")
+	  ("C" counsel-projectile-switch-project-action-configure "run project configure command")
+	  ("E" counsel-projectile-switch-project-action-edit-dir-locals "edit project dir-locals")
+	  ("v" counsel-projectile-switch-project-action-vc "open project in vc-dir / magit / monky")
+	  ("sg" counsel-projectile-switch-project-action-grep "search project with grep")
+	  ("si" counsel-projectile-switch-project-action-git-grep "search project with git grep")
+	  ("ss" counsel-projectile-switch-project-action-ag "search project with ag")
+	  ("sr" counsel-projectile-switch-project-action-rg "search project with rg")
+	  ("xs" counsel-projectile-switch-project-action-run-shell "invoke shell from project root")
+	  ("xe" counsel-projectile-switch-project-action-run-eshell "invoke eshell from project root")
+	  ("xt" counsel-projectile-switch-project-action-run-term "invoke term from project root")
+	  ("xv" counsel-projectile-switch-project-action-run-vterm "invoke vterm from project root")
+	  ("Oc" counsel-projectile-switch-project-action-org-capture "capture into project")
+	  ("Oa" counsel-projectile-switch-project-action-org-agenda "open project agenda")))
+
   (defvar projectile-main-project-dir-prefix
     (cond
      ((eq system-type 'gnu/linux) "~/")
@@ -341,26 +370,32 @@
   (visual-fill-column-center-text t))
 
 ;; LSP integration
+(use-package eglot)
+
 (use-package lsp-mode
+  :hook
+  (python-mode . lsp-mode)
   :custom
   (lsp-inlay-hint-enable t)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
   :config
-  (setq read-process-output-max (* 8 1024 1024))
-  (add-hook 'prog-mode-hook
-	    (lambda ()
-	      (unless (derived-mode-p 'emacs-lisp-mode)
-		(lsp-mode 1)))))
+  (setq read-process-output-max (* 8 1024 1024)))
 
 (use-package dap-mode) ;; Debug adapter
-;; (use-package lsp-ivy) ;; Ivy integration
 (use-package flycheck) ;; Diagnostics
-(use-package yasnippet) ;; Snippet template system
+
+;; Snippet template system
+(use-package yasnippet
+  :hook
+  (company-mode . yas-minor-mode))
 
 ;;;; Code completion
 (use-package company
   :after lsp-mode
   :diminish
-  :hook (lsp-mode . company-mode)
+  :hook
+  (lsp-mode . company-mode)
+  (emacs-lisp-mode . company-mode)
   :bind
   (:map company-active-map
 	("<tab>" . company-complete-selection))
@@ -376,19 +411,38 @@
   ;; (company-transformers '(company-sort-by-backend-importance))
 
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0))
+  (company-idle-delay 0)
+  :config
+  (add-hook 'emacs-lisp-mode-hook (lambda () (company-mode 1))))
 
 ;;;; Sideline with diagnostics messages
 (use-package lsp-ui
+  :after lsp-mode
   :custom
   (lsp-ui-sideline-show-diagnostics t)
   (lsp-ui-sideline-delay 0)
   (lsp-ui-sideline-update-mode 'line))
 
 ;;;; Programming modes
-(use-package rust-mode)
+(use-package rustic)
+(use-package cargo-mode)
+
 (use-package php-mode)
-(use-package python-mode)
+
+(setq-default go-ts-mode-indent-offset 4)
+(use-package go-mode
+  :after lsp-mode
+  :hook (go-mode . lsp-mode))
+(use-package templ-ts-mode
+  :hook
+  (templ-ts-mode . eglot-ensure)
+  (templ-ts-mode . company-mode))
+
+(use-package kotlin-mode)
+(use-package android-mode
+  :custom
+  (android-mode-sdk-dir "C:/Users/kolas/AppData/Local/Android/Sdk")
+  (android-mode-build-command-alist '((gradle . "gradlew"))))
 
 ;; Keybindings
 
@@ -443,6 +497,7 @@
 
 (define-key prefix-p-map (kbd "f") '("find file" . projectile-find-file))
 (define-key prefix-p-map (kbd "s") '("search" . counsel-projectile-rg))
+(define-key prefix-p-map (kbd "g") '("git" . magit-status))
 
 ;;;;;; this  should be under file, but i got used to clicking pv, and f is *not* fun to click on dvorak
 (define-key prefix-p-map (kbd "v") '("file dired" . dired-jump))

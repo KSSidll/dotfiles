@@ -1,0 +1,42 @@
+import = ["/home/sidll/.config/alacritty/config/rose-pine.toml"]
+
+[cursor]
+vi_mode_style = "Block"
+
+[cursor.style]
+blinking = "Off"
+shape = "Beam"
+
+[env]
+TERM = "xterm-256color"
+
+[font.bold]
+family = "Hack Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "Hack Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "Hack Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "Hack Nerd Font Mono"
+style = "Regular"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[shell]
+program = "zsh"
+
+[window]
+dynamic_title = true
+title = "Alacritty"
+
+[window.padding]
+x = 15
+y = 10

@@ -78,3 +78,7 @@ composer/
 /.emacs.d/.dap-breakpoints
 /.emacs.d/auto-save-list/
 /.emacs.d/projects
+/.emacs.d/eshell
+/.emacs.d/tree-sitter
+.cache
+/go
