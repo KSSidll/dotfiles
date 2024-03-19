@@ -1,0 +1,66 @@
+theme = "catppuccin_mocha"
+
+[editor]
+scrolloff = 12
+line-number = "relative"
+completion-trigger-len = 1
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.whitespace.render]
+space = "all"
+tab = "all"
+nbsp = "all"
+newline = "none"
+
+[editor.soft-wrap]
+enable = true
+
+[keys.normal]
+C-c = "collapse_selection"
+C-g = "collapse_selection"
+V = ["extend_to_line_bounds", "select_mode"]
+d = { d = ["extend_to_line_bounds", "delete_selection"] }
+D = ["collapse_selection", "select_mode", "goto_line_end", "delete_selection"]
+y = { y = ["extend_to_line_bounds", "yank"] }
+Y = ["collapse_selection", "select_mode", "goto_line_end", "yank"]
+p = "paste_after"
+P = "paste_before"
+g = { c = "toggle_comments" }
+G = "goto_last_line"
+
+[keys.normal."space"]
+y = { y = ["extend_to_line_bounds", "yank_to_clipboard"] }
+Y = ["collapse_selection", "select_mode", "goto_line_end", "yank_to_clipboard"]
+p = "paste_clipboard_after"
+P = "paste_clipboard_before"
+
+[keys.normal.C-w]
+C-c = "wclose"
+c = "wclose"
+
+[keys.insert]
+C-c = "normal_mode"
+C-g = "normal_mode"
+
+[keys.select]
+C-c = ["normal_mode", "collapse_selection"]
+C-g = ["normal_mode", "collapse_selection"]
+V = "extend_to_line_bounds"
+s = "surround_add"
+S = "surround_add"
+r = "surround_replace"
+a = "select_textobject_around"
+i = "select_textobject_inner"
+y = "yank"
+g = { c = "toggle_comments" }
+
+[keys.select."space"]
+y = "yank_to_clipboard"

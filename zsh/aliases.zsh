@@ -12,6 +12,7 @@ alias sr='source ~/.config/zsh/env.zsh'
 alias ..="cd .."
 alias mkdir="mkdir -p"
 alias installed="grep -iE 'installed|removed' /var/log/pacman.log"
+alias updated="grep -iE 'upgraded' /var/log/pacman.log"
 alias ll="ls -la"
 alias lt="ls --tree"
 alias cat="bat --color always --plain"

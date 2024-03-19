@@ -112,7 +112,7 @@
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-u-scroll nil)
   (setq evil-want-Y-yank-to-eol t)
   (setq evil-undo-system 'undo-tree)
   :config
@@ -370,11 +370,7 @@
   (visual-fill-column-center-text t))
 
 ;; LSP integration
-(use-package eglot)
-
 (use-package lsp-mode
-  :hook
-  (python-mode . lsp-mode)
   :custom
   (lsp-inlay-hint-enable t)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
@@ -417,26 +413,23 @@
 
 ;;;; Sideline with diagnostics messages
 (use-package lsp-ui
-  :after lsp-mode
   :custom
   (lsp-ui-sideline-show-diagnostics t)
   (lsp-ui-sideline-delay 0)
   (lsp-ui-sideline-update-mode 'line))
 
 ;;;; Programming modes
-(use-package rustic)
+(use-package rustic
+  :hook (rustic-mode . lsp-mode))
+
 (use-package cargo-mode)
 
-(use-package php-mode)
+(use-package php-mode
+  :hook (php-mode . lsp-mode))
 
 (setq-default go-ts-mode-indent-offset 4)
 (use-package go-mode
-  :after lsp-mode
   :hook (go-mode . lsp-mode))
-(use-package templ-ts-mode
-  :hook
-  (templ-ts-mode . eglot-ensure)
-  (templ-ts-mode . company-mode))
 
 (use-package kotlin-mode)
 (use-package android-mode
