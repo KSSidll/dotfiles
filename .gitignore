@@ -82,3 +82,17 @@ composer/
 /.emacs.d/tree-sitter
 .cache
 /go
+gtk-2.0/
+dockeye.yml
+helm/
+kactivitymanagerdrc
+kconf_updaterc
+kwalletrc
+wally/
+Xavion/
+Unknown Organization.conf
+QtProject/
+QOpenVPN/
+Postman/
+.keymapp/
+JetBrains/

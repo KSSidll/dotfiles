@@ -2,6 +2,8 @@
 ## PATH & ENV Var
 ##
 
+eval $(minikube docker-env)
+
 export PATH="$HOME/.spicetify:$PATH"
 export PATH="$HOME/.scripts:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
@@ -12,6 +14,8 @@ export TERMINAL="alacritty"
 export BROWSER="firefox"
 export VISUAL="nvim"
 export EDITOR="nvim"
+
+export KUBECONFIG="$HOME/.kube/config"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
